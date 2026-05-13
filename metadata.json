@@ -1,0 +1,7 @@
+{
+  "uuid": "idle-shame@siddharth",
+  "name": "Idle Shame",
+  "description": "Fullscreen idle timer overlay for GNOME",
+  "version": 1,
+  "shell-version": ["46", "47", "48", "49", "50"]
+}
