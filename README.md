@@ -235,4 +235,4 @@ The GNOME screensaver and power settings blank the screen after inactivity, but 
 
 ## License
 
-MIT — see [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](https://github.com/SidHeart-py/idle-shame/blob/main/LICENSE) for details.
