@@ -7,6 +7,7 @@ Built as a pure GNOME Shell extension in GJS (JavaScript) — no Python, no syst
 ![GNOME Shell](https://img.shields.io/badge/GNOME%20Shell-46%20%E2%80%93%2050-4A86CF?logo=gnome&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Language](https://img.shields.io/badge/language-GJS%20%2F%20JavaScript-f7df1e?logo=javascript&logoColor=black)
+[![Available on GNOME Extensions](https://img.shields.io/badge/GNOME%20Extensions-idle--shame-4A86CF?logo=gnome&logoColor=white)](https://extensions.gnome.org/extension/9974/idle-shame/)
 
 ---
 
@@ -16,7 +17,7 @@ Built as a pure GNOME Shell extension in GJS (JavaScript) — no Python, no syst
 - Shows a **fullscreen black overlay** on the **primary monitor only**
 - Displays a **MM:SS timer** in the center that counts up from `00:00`
 - **Disappears instantly** the moment mouse or keyboard activity is detected
-- **Respects idle inhibitors** — if YouTube, VLC, Caffine or any other app has told GNOME "I'm active, don't go idle", the overlay will not appear
+- **Respects idle inhibitors** — if YouTube, VLC, Caffeine or any other app has told GNOME "I'm active, don't go idle", the overlay will not appear
 
 ---
 
@@ -29,7 +30,7 @@ Built as a pure GNOME Shell extension in GJS (JavaScript) — no Python, no syst
 │                                         │
 │                                         │
 │                                         │
-│               04:23                     │
+│                 04:23                   │
 │                                         │
 │                                         │
 │                                         │
@@ -48,6 +49,14 @@ Built as a pure GNOME Shell extension in GJS (JavaScript) — no Python, no syst
 
 ## Installation
 
+### From GNOME Extensions website (recommended)
+
+Visit the extension page and click **Install**:
+
+**[https://extensions.gnome.org/extension/9974/idle-shame/](https://extensions.gnome.org/extension/9974/idle-shame/)**
+
+> You will need the [GNOME Shell browser integration](https://extensions.gnome.org/about/#no-such-extension) extension installed in your browser for the Install button to work.
+
 ### Manual (recommended for development)
 
 ```bash
@@ -62,7 +71,7 @@ cp -r idle-shame \
 gnome-extensions enable idle-shame@siddharth
 ```
 
-Then **log out and log back in**, or reload GNOME Shell (X11 only: `Alt+F2` → type `r` → Enter).
+Then **log out and log back in**, or reload GNOME Shell (X11 only: `Alt+F2` → type `r` → Enter). On Wayland, use the `dbus-send` reload command in the Development section below.
 
 ### Verify it loaded
 
@@ -105,7 +114,7 @@ Rather than continuing to poll after the overlay appears, the extension register
 
 ### Idle inhibitor detection
 
-Apps like browsers playing video (YouTube, Netflix) and media players (VLC, mpv) or extention like Caffine register an **idle inhibitor** with GNOME Session Manager when they want to prevent idle behavior. The extension checks for this before showing the overlay:
+Apps like browsers playing video (YouTube, Netflix) and media players (VLC, mpv), or extensions like Caffeine, register an **idle inhibitor** with GNOME Session Manager when they want to prevent idle behavior. The extension checks for this before showing the overlay:
 
 ```
 org.gnome.SessionManager.GetInhibitors()
@@ -153,17 +162,15 @@ dbus-send --session --type=method_call \
   org.gnome.Shell.Eval \
   string:'global.reloadExtension("idle-shame@siddharth")'
 ```
-or
 
->**Logout and Login** if above one does not work
-
-
+> **Logout and login** if the above command does not work.
 
 ### Watch live logs
 
 ```bash
 journalctl /usr/bin/gnome-shell -f | grep -iE "idle|shame|JS ERROR"
 ```
+
 ### Inspect active inhibitors
 
 ```bash
@@ -215,6 +222,7 @@ gdbus call --session \
 
   > We will be tackling screen blank and suspend inhibition natively in a
   > future version so no manual workaround is needed.
+
 ---
 
 ## Planned features
@@ -223,7 +231,7 @@ gdbus call --session \
 - [ ] Option to show overlay on all monitors
 - [ ] Configurable overlay color and font size
 - [ ] Wayland idle protocol support via `ext-idle-notify-v1` as a fallback
-- [ ] No Blank screen and suspention override.
+- [ ] Native screen blank and suspend inhibition (no manual workaround needed)
 
 ---
 
