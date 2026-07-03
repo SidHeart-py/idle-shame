@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="idle-shame">
+  <schema id="org.gnome.shell.extensions.idle-shame" path="/org/gnome/shell/extensions/idle-shame/">
+    <key name="idle-seconds" type="i">
+      <default>90</default>
+      <range min="5" max="3600"/>
+      <summary>Idle threshold in seconds</summary>
+      <description>
+        Number of seconds the screen must be idle (with no session
+        inhibitor active) before the Idle Shame overlay appears.
+      </description>
+    </key>
+  </schema>
+</schemalist>

@@ -1,8 +1,9 @@
 import St from 'gi://St';
 import Clutter from 'gi://Clutter';
 import GLib from 'gi://GLib';
-import Gio from 'gi://Gio';        // ADD: needed for DBus calls
+import Gio from 'gi://Gio';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
 let overlay = null;
 let label = null;
@@ -10,9 +11,22 @@ let timerId = null;
 let checkId = null;
 let activeWatchId = null;
 let startTime = 0;
+let settings = null;   // GSettings, set in enable()
 
-const IDLE_LIMIT = 90 * 1000;
 const INHIBIT_IDLE_FLAG = 8;   // org.gnome.SessionManager inhibitor flag
+const DEFAULT_IDLE_SECONDS = 90;
+
+
+// -----------------------------------
+// Idle limit (now user-configurable)
+// -----------------------------------
+
+function getIdleLimitMs() {
+    const seconds = settings
+        ? settings.get_int('idle-seconds')
+        : DEFAULT_IDLE_SECONDS;
+    return seconds * 1000;
+}
 
 
 // -----------------------------------
@@ -226,8 +240,8 @@ function startTimer() {
 
 // -----------------------------------
 // Periodic Check
-// Now checks session inhibitors before showing overlay.
-// Uses async inhibitor check to avoid blocking the shell.
+// Reads the user's configured idle-seconds on every tick,
+// so changes made in prefs take effect without re-enabling.
 // -----------------------------------
 
 function periodicCheck() {
@@ -239,7 +253,7 @@ function periodicCheck() {
 
     const idle = getIdleTime();
 
-    if (idle < IDLE_LIMIT)
+    if (idle < getIdleLimitMs())
         return GLib.SOURCE_CONTINUE;
 
     // idle threshold reached — now check inhibitors before showing
@@ -269,9 +283,11 @@ function periodicCheck() {
 // Extension entry point
 // -----------------------------------
 
-export default class IdleShameExtension {
+export default class IdleShameExtension extends Extension {
 
     enable() {
+        settings = this.getSettings();
+
         checkId = GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
             5,
@@ -286,5 +302,6 @@ export default class IdleShameExtension {
         }
 
         destroyOverlay();
+        settings = null;
     }
 }
